@@ -17,7 +17,6 @@ export async function get(
     pull_number: number
   })
 
-  core.info(JSON.stringify(response.data))
   return response.data
 }
 
@@ -28,6 +27,7 @@ export async function create(
   core.info(`create pull request: ${pr.head} to: ${pr.base}`)
   const response = await octokit.rest.pulls.create({
     ...context.repo,
+    title: pr.title,
     base: pr.base,
     head: pr.head,
     body: pr.body || ''

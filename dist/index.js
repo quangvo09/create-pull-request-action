@@ -116,7 +116,7 @@ exports.get = get;
 function create(octokit, pr) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`create pull request: ${pr.head} to: ${pr.base}`);
-        const response = yield octokit.rest.pulls.create(Object.assign(Object.assign({}, github_1.context.repo), { base: pr.base, head: pr.head, body: pr.body || '' }));
+        const response = yield octokit.rest.pulls.create(Object.assign(Object.assign({}, github_1.context.repo), { title: pr.title, base: pr.base, head: pr.head, body: pr.body || '' }));
         const { html_url, number } = response.data;
         core.info(`new pull request: ${html_url}`);
         if (pr.labels.length > 0 || pr.assignees.length > 0) {
