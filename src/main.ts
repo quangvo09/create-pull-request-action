@@ -25,8 +25,8 @@ async function run(): Promise<void> {
       assignees,
       labels
     })
-  } catch (error: unknown) {
-    core.setFailed(JSON.stringify(error))
+  } catch (error) {
+    core.setFailed(String(error))
   }
 }
 

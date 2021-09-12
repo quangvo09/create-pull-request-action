@@ -60,7 +60,7 @@ function run() {
             });
         }
         catch (error) {
-            core.setFailed(JSON.stringify(error));
+            core.setFailed(String(error));
         }
     });
 }
