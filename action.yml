@@ -1,11 +1,22 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'pull-request-action'
+description: 'Create new PR'
+author: 'Quang Vo'
 inputs:
-  milliseconds: # change this
+  github_token:
+    description: 'GitHub token'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  branch:
+    required: true
+    description: 'head branch'
+  to:
+    required: true
+    description: 'base branch for create pr'
+  labels:
+    required: false
+    description: 'pull request labels'
+  assignees:
+    required: false
+    description: 'pull request assignees'
 runs:
   using: 'node12'
   main: 'dist/index.js'

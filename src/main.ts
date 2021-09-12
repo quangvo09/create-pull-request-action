@@ -1,18 +1,29 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {getOctokit} from '@actions/github'
+import * as PR from './pull_request'
+
+const octokit = getOctokit(core.getInput('github_token'))
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const prNumber = +core.getInput('pr_number')
+    const branch = core.getInput('branch')
+    const to = core.getInput('to')
+    const assignees = (core.getInput('assignees') || '').split(',')
+    const labels = (core.getInput('labels') || '').split(',')
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const pr = await PR.get(octokit, prNumber)
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    core.setFailed(error.message)
+    await PR.create(octokit, {
+      title: pr.title,
+      body: pr.body,
+      branch,
+      to,
+      assignees,
+      labels
+    })
+  } catch (error: unknown) {
+    core.setFailed(JSON.stringify(error))
   }
 }
 
