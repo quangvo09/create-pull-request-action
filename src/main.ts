@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     }
 
     const pr = await PR.get(octokit, prNumber)
+    core.info(JSON.stringify(pr))
 
     await PR.create(octokit, {
       title: pr.title,

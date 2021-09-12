@@ -16,6 +16,8 @@ export async function get(
     ...context.repo,
     pull_number: number
   })
+
+  core.info(JSON.stringify(response.data))
   return response.data
 }
 
