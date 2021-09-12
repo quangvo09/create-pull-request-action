@@ -16,6 +16,7 @@ export type CreatePullRequestRequest = {
   body: string | null
   assignees: string[]
   labels: string[]
+  reviewers: string[]
 }
 
 export type CreatePullRequestResponse = {

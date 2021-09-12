@@ -33,6 +33,7 @@ export async function create(
     body: pr.body || ''
   })
   const {html_url, number} = response.data
+
   core.info(`new pull request: ${html_url}`)
 
   if (pr.labels.length > 0 || pr.assignees.length > 0) {
@@ -44,6 +45,15 @@ export async function create(
       issue_number: number,
       labels: pr.labels,
       assignees: pr.assignees
+    })
+  }
+
+  if (pr.reviewers.length > 0) {
+    core.info(`request reviewers: ${pr.labels.join(',')}`)
+    await octokit.rest.pulls.requestReviewers({
+      ...context.repo,
+      pull_number: number,
+      reviewers: pr.reviewers
     })
   }
 

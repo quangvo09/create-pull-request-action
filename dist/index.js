@@ -42,14 +42,20 @@ const octokit = (0, github_1.getOctokit)(core.getInput('github_token'));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const branchPrefix = core.getInput('branch_prefix');
             const baseBranch = core.getInput('base_branch');
             const assignees = (core.getInput('assignees') || '').split(',');
             const labels = (core.getInput('labels') || '').split(',');
+            const reviewers = (core.getInput('reviewers') || '').split(',');
             const prNumber = PR.getPrNumber();
             if (!prNumber) {
                 throw new Error('Can not get current PR number');
             }
             const pr = yield PR.get(octokit, prNumber);
+            if (pr.head.ref.startsWith(branchPrefix)) {
+                core.info(`Ignore action from branch ${baseBranch}`);
+                return;
+            }
             if (pr.head.ref === baseBranch) {
                 core.info(`Skip to create PR to branch ${baseBranch}`);
                 return;
@@ -60,7 +66,8 @@ function run() {
                 head: pr.head.ref,
                 base: baseBranch,
                 assignees,
-                labels
+                labels,
+                reviewers
             });
         }
         catch (error) {
@@ -126,6 +133,10 @@ function create(octokit, pr) {
         if (pr.labels.length > 0 || pr.assignees.length > 0) {
             core.info(`add labels: ${pr.labels.join(',')}, assignees: ${pr.assignees.join(',')}`);
             yield octokit.rest.issues.update(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: number, labels: pr.labels, assignees: pr.assignees }));
+        }
+        if (pr.reviewers.length > 0) {
+            core.info(`request reviewers: ${pr.labels.join(',')}`);
+            yield octokit.rest.pulls.requestReviewers(Object.assign(Object.assign({}, github_1.context.repo), { pull_number: number, reviewers: pr.reviewers }));
         }
         return { number, url: html_url };
     });

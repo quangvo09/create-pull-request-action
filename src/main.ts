@@ -6,9 +6,11 @@ const octokit = getOctokit(core.getInput('github_token'))
 
 async function run(): Promise<void> {
   try {
+    const branchPrefix = core.getInput('branch_prefix')
     const baseBranch = core.getInput('base_branch')
     const assignees = (core.getInput('assignees') || '').split(',')
     const labels = (core.getInput('labels') || '').split(',')
+    const reviewers = (core.getInput('reviewers') || '').split(',')
 
     const prNumber = PR.getPrNumber()
     if (!prNumber) {
@@ -16,6 +18,11 @@ async function run(): Promise<void> {
     }
 
     const pr = await PR.get(octokit, prNumber)
+
+    if (pr.head.ref.startsWith(branchPrefix)) {
+      core.info(`Ignore action from branch ${baseBranch}`)
+      return
+    }
 
     if (pr.head.ref === baseBranch) {
       core.info(`Skip to create PR to branch ${baseBranch}`)
@@ -28,7 +35,8 @@ async function run(): Promise<void> {
       head: pr.head.ref,
       base: baseBranch,
       assignees,
-      labels
+      labels,
+      reviewers
     })
   } catch (error) {
     core.setFailed(String(error))

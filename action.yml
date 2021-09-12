@@ -1,10 +1,15 @@
-name: 'pull-request-action'
-description: 'Create new PR'
+name: 'create-pull-request-action'
+description: 'Create Pull Request Action'
 author: 'Quang Vo'
 inputs:
   github_token:
     description: 'GitHub token'
     required: true
+  # Ex: develop
+  branch_prefix:
+    required: true
+    description: 'Run action on branch with prefix'
+    default: hotfix
   # Ex: develop
   base_branch:
     required: true
@@ -17,6 +22,13 @@ inputs:
   assignees:
     required: false
     description: 'pull request assignees'
+  # Ex: quangvo09,ttpho
+  reviewers:
+    required: false
+    description: 'request reviewers'
 runs:
   using: 'node12'
   main: 'dist/index.js'
+branding:
+  icon: 'git-merge'
+  color: 'black'
