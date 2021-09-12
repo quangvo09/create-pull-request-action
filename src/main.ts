@@ -17,6 +17,11 @@ async function run(): Promise<void> {
 
     const pr = await PR.get(octokit, prNumber)
 
+    if (pr.head.ref === baseBranch) {
+      core.info(`Skip to create PR to branch ${baseBranch}`)
+      return
+    }
+
     await PR.create(octokit, {
       title: pr.title,
       body: pr.body,

@@ -13,7 +13,7 @@ inputs:
   labels:
     required: false
     description: 'pull request labels'
-  # Ex: @quangvo09,@ttpho
+  # Ex: quangvo09,ttpho
   assignees:
     required: false
     description: 'pull request assignees'

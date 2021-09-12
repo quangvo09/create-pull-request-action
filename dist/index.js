@@ -50,6 +50,10 @@ function run() {
                 throw new Error('Can not get current PR number');
             }
             const pr = yield PR.get(octokit, prNumber);
+            if (pr.head.ref === baseBranch) {
+                core.info(`Skip to create PR to branch ${baseBranch}`);
+                return;
+            }
             yield PR.create(octokit, {
                 title: pr.title,
                 body: pr.body,
