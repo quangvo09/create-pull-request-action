@@ -3,12 +3,16 @@ export type GetPullRequestResponse = {
   url: string
   title: string
   body: string | null
+  head: {
+    label: string
+    ref: string
+  }
 }
 
 export type CreatePullRequestRequest = {
   title: string
-  branch: string
-  to: string
+  head: string
+  base: string
   body: string | null
   assignees: string[]
   labels: string[]

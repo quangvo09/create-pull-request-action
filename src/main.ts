@@ -6,19 +6,22 @@ const octokit = getOctokit(core.getInput('github_token'))
 
 async function run(): Promise<void> {
   try {
-    const prNumber = +core.getInput('pr_number')
-    const branch = core.getInput('branch')
-    const to = core.getInput('to')
+    const baseBranch = core.getInput('base_branch')
     const assignees = (core.getInput('assignees') || '').split(',')
     const labels = (core.getInput('labels') || '').split(',')
+
+    const prNumber = PR.getPrNumber()
+    if (!prNumber) {
+      throw new Error('Can not get current PR number')
+    }
 
     const pr = await PR.get(octokit, prNumber)
 
     await PR.create(octokit, {
       title: pr.title,
       body: pr.body,
-      branch,
-      to,
+      head: pr.head.ref,
+      base: baseBranch,
       assignees,
       labels
     })

@@ -5,15 +5,15 @@ inputs:
   github_token:
     description: 'GitHub token'
     required: true
-  branch:
-    required: true
-    description: 'head branch'
-  to:
+  # Ex: develop
+  base_branch:
     required: true
     description: 'base branch for create pr'
+  # Ex: hotfix,develop
   labels:
     required: false
     description: 'pull request labels'
+  # Ex: @quangvo09,@ttpho
   assignees:
     required: false
     description: 'pull request assignees'

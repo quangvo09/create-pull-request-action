@@ -23,11 +23,11 @@ export async function create(
   octokit: InstanceType<typeof GitHub>,
   pr: CreatePullRequestRequest
 ): Promise<CreatePullRequestResponse> {
-  core.info(`create pull request:${pr.branch} to: ${pr.to}`)
+  core.info(`create pull request: ${pr.head} to: ${pr.base}`)
   const response = await octokit.rest.pulls.create({
     ...context.repo,
-    base: pr.to,
-    head: pr.branch,
+    base: pr.base,
+    head: pr.head,
     body: pr.body || ''
   })
   const {html_url, number} = response.data
@@ -46,4 +46,9 @@ export async function create(
   }
 
   return {number, url: html_url}
+}
+
+export function getPrNumber(): number | undefined {
+  const pullRequest = context.payload.pull_request
+  return pullRequest?.number
 }

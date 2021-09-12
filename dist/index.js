@@ -42,17 +42,19 @@ const octokit = (0, github_1.getOctokit)(core.getInput('github_token'));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const prNumber = +core.getInput('pr_number');
-            const branch = core.getInput('branch');
-            const to = core.getInput('to');
+            const baseBranch = core.getInput('base_branch');
             const assignees = (core.getInput('assignees') || '').split(',');
             const labels = (core.getInput('labels') || '').split(',');
+            const prNumber = PR.getPrNumber();
+            if (!prNumber) {
+                throw new Error('Can not get current PR number');
+            }
             const pr = yield PR.get(octokit, prNumber);
             yield PR.create(octokit, {
                 title: pr.title,
                 body: pr.body,
-                branch,
-                to,
+                head: pr.head.ref,
+                base: baseBranch,
                 assignees,
                 labels
             });
@@ -101,7 +103,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.create = exports.get = void 0;
+exports.getPrNumber = exports.create = exports.get = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const github_1 = __nccwpck_require__(438);
 function get(octokit, number) {
@@ -113,8 +115,8 @@ function get(octokit, number) {
 exports.get = get;
 function create(octokit, pr) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info(`create pull request:${pr.branch} to: ${pr.to}`);
-        const response = yield octokit.rest.pulls.create(Object.assign(Object.assign({}, github_1.context.repo), { base: pr.to, head: pr.branch, body: pr.body || '' }));
+        core.info(`create pull request: ${pr.head} to: ${pr.base}`);
+        const response = yield octokit.rest.pulls.create(Object.assign(Object.assign({}, github_1.context.repo), { base: pr.base, head: pr.head, body: pr.body || '' }));
         const { html_url, number } = response.data;
         core.info(`new pull request: ${html_url}`);
         if (pr.labels.length > 0 || pr.assignees.length > 0) {
@@ -125,6 +127,11 @@ function create(octokit, pr) {
     });
 }
 exports.create = create;
+function getPrNumber() {
+    const pullRequest = github_1.context.payload.pull_request;
+    return pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.number;
+}
+exports.getPrNumber = getPrNumber;
 
 
 /***/ }),
