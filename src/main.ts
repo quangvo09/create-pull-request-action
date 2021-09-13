@@ -8,9 +8,9 @@ async function run(): Promise<void> {
   try {
     const branchPrefix = core.getInput('branch_prefix')
     const baseBranch = core.getInput('base_branch')
-    const assignees = (core.getInput('assignees') || '').split(',')
-    const labels = (core.getInput('labels') || '').split(',')
-    const reviewers = (core.getInput('reviewers') || '').split(',')
+    const assignees = getInputArray('assignees')
+    const labels = getInputArray('labels')
+    const reviewers = getInputArray('reviewers')
 
     const prNumber = PR.getPrNumber()
     if (!prNumber) {
@@ -41,6 +41,13 @@ async function run(): Promise<void> {
   } catch (error) {
     core.setFailed(String(error))
   }
+}
+
+function getInputArray(name: string): string[] {
+  const value = core.getInput(name)
+  if (!value) return []
+
+  return value.split(',')
 }
 
 run()
