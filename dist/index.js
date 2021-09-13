@@ -135,7 +135,7 @@ function create(octokit, pr) {
             yield octokit.rest.issues.update(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: number, labels: pr.labels, assignees: pr.assignees }));
         }
         if (pr.reviewers.length > 0) {
-            core.info(`request reviewers: ${pr.labels.join(',')}`);
+            core.info(`request reviewers: ${pr.reviewers.join(',')}`);
             yield octokit.rest.pulls.requestReviewers(Object.assign(Object.assign({}, github_1.context.repo), { pull_number: number, reviewers: pr.reviewers }));
         }
         return { number, url: html_url };

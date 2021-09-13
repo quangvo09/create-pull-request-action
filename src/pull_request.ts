@@ -49,7 +49,7 @@ export async function create(
   }
 
   if (pr.reviewers.length > 0) {
-    core.info(`request reviewers: ${pr.labels.join(',')}`)
+    core.info(`request reviewers: ${pr.reviewers.join(',')}`)
     await octokit.rest.pulls.requestReviewers({
       ...context.repo,
       pull_number: number,
