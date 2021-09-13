@@ -5,7 +5,7 @@ inputs:
   github_token:
     description: 'GitHub token'
     required: true
-  # Ex: develop
+  # Ex: develop or *
   branch_prefix:
     required: true
     description: 'Run action on branch with prefix'

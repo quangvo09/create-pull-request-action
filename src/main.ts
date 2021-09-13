@@ -19,7 +19,7 @@ async function run(): Promise<void> {
 
     const pr = await PR.get(octokit, prNumber)
 
-    if (pr.head.ref.startsWith(branchPrefix)) {
+    if (branchPrefix !== '*' && !pr.head.ref.startsWith(branchPrefix)) {
       core.info(`Ignore action from branch ${baseBranch}`)
       return
     }

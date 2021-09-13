@@ -52,7 +52,7 @@ function run() {
                 throw new Error('Can not get current PR number');
             }
             const pr = yield PR.get(octokit, prNumber);
-            if (pr.head.ref.startsWith(branchPrefix)) {
+            if (branchPrefix !== '*' && !pr.head.ref.startsWith(branchPrefix)) {
                 core.info(`Ignore action from branch ${baseBranch}`);
                 return;
             }
